@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -e
+
+wp() {
+    ${DOCKER_COMMAND:-docker} run \
+        --network cipher_default \
+        --volumes-from cipher_wordpress_1 \
+        -e WORDPRESS_DB_HOST=mysql \
+        -e WORDPRESS_DB_NAME=wordpress \
+        -e WORDPRESS_DB_USER=wordpress \
+        -e WORDPRESS_DB_PASSWORD=foobar \
+        --rm \
+        docker.io/wordpress:cli \
+        wp "$@"
+}
+
+setup_docker_compose() {
+    echo Stopping docker compose if running...
+    ${DOCKER_COMMAND:-docker} compose down -v
+
+    echo Starting docker compose...
+    ${DOCKER_COMMAND:-docker} compose up -d
+}
+
+setup_wordpress() {
+    echo Setting up Wordpress
+    while ! wp db reset --yes >/dev/null 2>&1; do
+        echo Failed...
+        sleep 10
+        echo Trying again...
+    done
+    title="Team Cipher Test Blog"
+    wp core install --skip-email --admin_user=admin --admin_password=admin --admin_email=admin@localhost.invalid --url=http://localhost:8080 --title="$title"
+    wp theme activate cipher
+}
+
+main() {
+    setup_docker_compose
+    setup_wordpress
+    echo "Success! Site is running at http://localhost:8080. Username and password are 'admin'
+}
+
+main

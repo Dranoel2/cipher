@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+${DOCKER_COMMAND:-docker} exec -it cipher_wordpress_1 bash

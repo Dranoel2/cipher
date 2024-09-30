@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+${DOCKER_COMMAND:-docker} compose up -d
+
+echo "Server running at http://localhost:8080. Username/password are 'admin'."

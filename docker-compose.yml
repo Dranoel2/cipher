@@ -1,0 +1,31 @@
+volumes:
+  mysql_data:
+  wordpress:
+
+services:
+  mysql:
+    image: mariadb:10
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: foobar
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: foobar
+      MYSQL_DATABASE: wordpress
+
+  wordpress:
+    image: docker.io/wordpress:latest
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: foobar
+      WORDPRESS_CONFIG_EXTRA: "define('WP_HOME','http://localhost:8080'); define('WP_SITEURL','http://localhost:8080');"
+    ports:
+      - 8080:80
+    volumes:
+      - wordpress:/var/www/html
+      - .:/var/www/html/wp-content/themes/cipher:z
+
