@@ -1014,8 +1014,15 @@ textarea {
 	justify-content: space-evenly;
 }
 
-.site-main {
-	margin: 1em 2em;
+@media screen and (min-width: 480px) {
+    .site-main {
+        margin: 1em 4em;
+    }
+}
+@media screen and (max-width: 480px) {
+    .site-main {
+        margin: 1em 2em;
+    }
 }
 
 .articles {
